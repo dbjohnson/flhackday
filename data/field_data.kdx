@@ -1,0 +1,79 @@
+Layout {
+  FileType : "delimited"
+  Delimiter : "	"
+  CoalesceDelimiters : "1"
+  Latitude : "2"
+  Longitude : "1"
+  SkipRows : "1"
+  TextCodec : "ISO-8859-1"
+  FieldDefinitions {
+    0 {
+      Name : "Field_id"
+      Type : "double"
+    }
+    1 {
+      Name : "Longitude"
+      Type : "double"
+    }
+    2 {
+      Name : "Latitude"
+      Type : "double"
+    }
+    3 {
+      Name : "WDRVI"
+      Type : "double"
+    }
+    4 {
+      Name : "DOY"
+      Type : "double"
+    }
+    5 {
+      Name : "Slope"
+      Type : "double"
+    }
+    6 {
+      Name : "Aspect"
+      Type : "double"
+    }
+    7 {
+      Name : "Curvature"
+      Type : "double"
+    }
+    8 {
+      Name : "Pct_clay"
+      Type : "double"
+    }
+    9 {
+      Name : "Pct_sand"
+      Type : "double"
+    }
+    10 {
+      Name : "Pct_silt"
+      Type : "double"
+    }
+    11 {
+      Name : "LAI"
+      Type : "double"
+    }
+    12 {
+      Name : "Slope_x_aspect"
+      Type : "double"
+    }
+    13 {
+      Name : "lat_int"
+      Type : "double"
+    }
+    14 {
+      Name : "lon_int"
+      Type : "double"
+    }
+    15 {
+      Name : "GDD"
+      Type : "double"
+    }
+    16 {
+      Name : "Region_id"
+      Type : "double"
+    }
+  }
+}

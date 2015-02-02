@@ -1,0 +1,5 @@
+*.pyc
+*.png
+data/weather/*
+data/satellite/*
+
