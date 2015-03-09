@@ -8,13 +8,15 @@ import scipy.stats
 import numpy as np
 import seaborn as sns
 from sklearn import linear_model
+from sklearn import cross_validation
+from sklearn import ensemble
 from spanner import countdown
 import grid
 import satellite
 import zonefinder
 import categorical
 import importer
-import model as mdl
+import model
 
 # set plotting defaults
 rc = {'font.size': 16, 'axes.labelsize': 16, 'legend.fontsize': 16,
@@ -29,30 +31,22 @@ os.system('rm %s/*' % os.path.expanduser('~/Desktop/plots/'))
 df = importer.load_data_frame(os.path.join('data', 'hack_day_dataset.txt'))
 
 # split into train/test sets
-ids = list(set(df['Field_id']))
-random.shuffle(ids)
-split = len(ids) / 2
-train_ids = ids[:split]
-test_ids = ids[split:]
-df['Trainset'] = df['Field_id'].map(lambda x: x in train_ids)
-df_train = df[df['Trainset']]
+xcols = ['Slope', 'Slope_x_aspect', 'Curvature', 'Pct_clay', 'Pct_silt', 'Pct_sand']
+xcols_cat = ['Region_id', 'Soil_type', 'Crop_guess']
+ycol = 'LAI'
+X, y = model.dataframe_to_xy(df, xcols, ycol, xcategorical=xcols_cat)
 
-df_train = df  # must use full dataset for training / prediction with categorical variables, or else their ordinal conversion will differ
+xtrain, xtest, ytrain, ytest = cross_validation.train_test_split(X, y, test_size=0.2)
 
 # model leaf area index
-model_columns = ['Slope', 'Slope_x_aspect', 'Curvature', 'GDD', 'Pct_clay', 'Pct_silt', 'Pct_sand']
-model = mdl.MixedModel(ycol='LAI', xcols=model_columns, xcols_cat=['Region_id', 'Soil_type', 'Crop_guess'],
-                       # model=linear_model.RANSACRegressor(linear_model.LinearRegression(), max_trials=1000))
-                        model=linear_model.LinearRegression())
+# mdl = linear_model.LinearRegression()
+mdl = ensemble.GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=10, random_state=0, loss='lad')
+mdl.fit(xtrain, ytrain)
+df['LAI_predicted'] = mdl.predict(X)
 
-model.train(df_train)
-df['LAI_predicted'] = model.predict(df)
-
-df_test = df[df['Trainset'] == False]
 
 sns.regplot(df['LAI'], df['LAI_predicted'])
 plt.savefig(os.path.expanduser('~/Desktop/plots/LAI_regression.png'))
-
 
 
 # print results
